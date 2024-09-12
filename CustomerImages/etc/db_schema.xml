@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="customer_images" resource="default" engine="innodb" comment="Customer Uploaded Images">
+        <column xsi:type="int" name="image_id" nullable="false" identity="true" unsigned="true" comment="Image ID"/>
+        <column xsi:type="int" name="customer_id" nullable="false" unsigned="true" comment="Customer ID"/>
+        <column xsi:type="varchar" name="image_path" nullable="false" length="255" comment="Image Path"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="image_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="CUSTOMER_IMAGE_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID" table="customer_images" column="customer_id" referenceTable="customer_entity" referenceColumn="entity_id" onDelete="CASCADE"/>
+    </table>
+</schema>

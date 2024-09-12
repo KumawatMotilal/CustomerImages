@@ -1,0 +1,101 @@
+<?php
+$customerImages = $block->getCustomerImages();
+?>
+
+<div class="customer-images-upload">
+    <form id="customer-image-upload-form" action="<?= $block->getUrl('customerimages/upload/image') ?>" method="post" enctype="multipart/form-data">
+        <label for="customer_image"><?= __('Choose File') ?></label>
+        <input type="file" id="customer_image" name="customer_image" />
+        <button type="submit"><?= __('Upload Image') ?></button>
+    </form>
+</div>
+
+<div class="customer-images-list">
+    <?php if ($customerImages): ?>
+        <?php foreach ($customerImages as $image): ?>
+            <div class="thumbnail">
+                <img src="<?= $block->getImageUrl($image->getImagePath()) ?>" alt="<?= __('Customer Image') ?>" loading="lazy" />
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p><?= __('No images uploaded yet.') ?></p>
+    <?php endif; ?>
+</div>
+
+<script type="text/javascript">
+    require(['jquery'], function($) {
+        $(document).ready(function() {
+            $('#customer-image-upload-form').on('submit', function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            $('.customer-images-list').append('<div class="thumbnail"><img src="' + response.image_url + '" alt="Customer Image" /></div>');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('An error occurred: ' + error);
+                    }
+                });
+            });
+
+            // Click event for thumbnails
+            $(document).on('click', '.thumbnail img', function() {
+                alert('You clicked on ' + $(this).attr('src'));
+            });
+        });
+    });
+</script>
+<style>
+.customer-images-upload {
+    margin-bottom: 20px;
+}
+
+.customer-images-upload form {
+    display: flex;
+    align-items: center;
+}
+
+.customer-images-upload label {
+    margin-right: 10px;
+}
+
+.customer-images-upload button {
+    margin-left: 10px;
+}
+
+.customer-images-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.thumbnail {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.thumbnail img:hover {
+    transform: scale(1.05);
+}
+</style>
